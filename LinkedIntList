@@ -1,0 +1,268 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package linked;
+
+import java.util.NoSuchElementException;
+
+public class LinkedIntList
+{
+
+    private ListNode front;
+
+    public static void main(String[] args)
+    {
+        LinkedIntList LIL = new LinkedIntList();
+        LIL.add(3);
+        LIL.add(4);
+        LIL.add(5);
+        LIL.add(6);
+        LIL.add(2, 7);
+        LIL.removeIndex(2);
+        System.out.println(LIL.get(2));
+
+    }
+
+    public LinkedIntList()
+    {
+        front = null;
+    }
+
+    public void add(int value)
+    {
+        if (front == null)
+        {
+            front = new ListNode(value);
+            return;
+        } else
+        {
+            ListNode current = front;
+            while (current.next != null)
+            {
+                current = current.next;
+            }
+            current.next = new ListNode(value);
+        }
+    }
+
+    public int get(int index)
+    {
+        ListNode current = front;
+        for (int i = 0; i < index; i++)
+        {
+            current = current.next;
+        }
+        return current.data;
+    }
+
+    @Override
+    public String toString()
+    {
+        if (front == null)
+        {
+            String log = "the front is null";
+            return log;
+        }
+        String str = "";
+        ListNode current = front;
+        while (current != null)
+        {
+            str += " " + current.data + " ";
+            current = current.next;
+        }
+        String last = current.data + " ";
+        return "Current LinkedList" + str + last;
+    }
+
+    public void add(int index, int value)
+    {
+        if (index == 0)
+        {
+            front = new ListNode(value, front);
+        } else
+        {
+            ListNode current = front;
+            for (int i = 0; i < index - 1; i++)
+            {
+                current = current.next;
+            }
+            current.next = new ListNode(value, current.next);
+        }
+    }
+
+    public int getCount()
+    {
+        ListNode current = front;
+        int count = 0;
+        while (current.next != null)
+        {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
+
+    public int remove()
+    {
+        if (front != null)
+        {
+            int result = front.data;
+            front = front.next;
+            return result;
+        } else
+        {
+            throw new NoSuchElementException();
+        }
+    }
+
+    public void removeIndex(int index)
+    {
+        if (index == 0)
+        {
+            front = front.next;
+        } else
+        {
+            ListNode current = front;
+            for (int i = 0; i < index - 1; i++)
+            {
+                current = current.next;
+            }
+            current.next = current.next.next;
+        }
+    }
+
+    public void addSorted(int value)
+    {
+        ListNode current = front;
+
+        if (front == null || value < front.data)
+        {
+            front = new ListNode(value, front);
+        }
+        while (current.next != null || value > current.next.data)
+        {
+            current = current.next;
+        }
+        ListNode additional = new ListNode(value, current.next);//insert point to next
+        current.next = additional;//previous to insert point
+    }
+
+    private static class ListNode
+    {
+
+        int data;
+        ListNode next;
+
+        public ListNode(int value)
+        {
+            this.data = value;
+            this.next = null;
+        }
+
+        public ListNode(int value, ListNode next)
+        {
+            this.data = value;
+            this.next = next;
+        }
+    }
+
+    private int getSize()
+    {
+        int count = 0;
+        ListNode current = front;
+        while (current != null)
+        {
+            current = current.next;
+            count++;
+        }
+        return count;
+    }
+
+    private ListNode nodeAt(int index)
+    {
+        ListNode current = front;
+        for (int i = 0; i < index; i++)
+        {
+            current = current.next;
+        }
+        return current;
+    }
+
+    public void stutter()
+    {
+        if (front == null)
+        {
+            System.out.println("empty");
+        } else
+        {
+            ListNode current = front;
+            int index = 1;
+            while (current != null)
+            {
+                int value = current.data;
+                add(index, value);
+                index = index + 2;
+                current = current.next.next;
+            }
+        }
+
+    }
+
+    public void removeRange(int startIndex, int endIndex)
+    {
+        if (endIndex < 0 || startIndex < 0) //this is to check invalid inputs
+        {
+            throw new IllegalArgumentException();
+
+        } else if (startIndex >= 0 && endIndex < getSize())
+        {
+            for (int i = startIndex; i <= endIndex; i++)
+            {
+                removeIndex(startIndex);//because if you remove the starting node, others will follow.
+            }
+        } else
+        {
+            System.exit(1);
+        }
+    }
+
+    public void shift()
+    {
+        if (front == null)
+        {
+            throw new NoSuchElementException();
+        } else
+        {
+            int count = 0;
+            ListNode current = front;
+            while (current != null)
+            {
+                current = current.next;
+                count++;
+            }
+            ListNode first = front;
+            ListNode before = front.next;
+            ListNode current1 = front.next;
+            for (int index = 0; index < count; index++)
+            {
+                if (index % 2 != 0)
+                {
+                    if (current1 != null)
+                    {
+                        current = current.next;
+                        first.next = current;
+                        int value = before.data;
+                        add(value);
+                    }
+                    first = first.next;
+                    before = first.next;
+                    current = current.next;
+                    index++;
+                }
+            }
+        }
+    }
+
+}
