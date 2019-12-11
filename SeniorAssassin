@@ -1,0 +1,198 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package seniorassassin;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Random;
+import java.util.Scanner;
+
+/**
+ *
+ * @author lupeiyu
+ */
+public class SeniorAssassin
+{
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args)
+    {
+        try
+        {
+            Scanner sc = new Scanner(new File("Name.txt"));
+            theGame assa = new theGame(sc);
+            assa.add();
+            assa.print();
+            assa.removeKilled();
+            System.out.println("the losers are: ");
+            assa.printDied();
+            System.out.println("the winner is: ");
+            assa.printWinner();
+        } catch (FileNotFoundException ex)
+        {
+            System.out.println("ERROR");
+        }
+
+    }
+
+    public static class theGame
+    {
+        Scanner sc = null;
+        public theGame(Scanner sc)
+        {
+            this.sc = sc;
+        }            
+        int count = 1;
+        LinkedNode front = null;
+        LinkedNode index, current, pre,diedFront,diedCurrent,killedNode;
+        Random r = new Random();
+        public void add()
+        {
+            index = front;
+
+            while (sc.hasNextLine())
+            {               
+                String name = sc.nextLine();
+                current = new LinkedNode(name);
+                int slot = r.nextInt(count);
+                index = front;
+                pre = front;
+                System.out.println(name + " is added to " + slot);
+                if (slot == 0)
+                {
+                    current.next = front;
+                    front = current;
+                } else
+                {
+                    while (slot > 0 && index != null)
+                    {
+                        pre = index;
+                        index = index.next;//moves on
+                        slot--;
+                    }
+                    pre.next = current;
+                    current.next = index;
+                }
+                count++;
+                print();
+            }System.out.println("while1");
+        }
+        public void printWinner()
+        {
+            System.out.println(front.name);
+        }
+        public void print()
+        {
+            current = front;
+            while(current != null)
+            {
+                System.out.println("name: " + current.name);
+                current = current.next;
+            }
+            System.out.println("while2");
+        }
+        public void removeKilled()
+        {
+            Scanner sc = new Scanner(System.in);
+            boolean found;
+            while(count>2)
+            {
+                count--;
+                System.out.println("name : ");
+                String killed = sc.next();
+                current = front.next;
+                pre = front;
+                found = false;
+                if(front.name.equalsIgnoreCase(killed))
+                {
+                    found = true;
+                    killedNode = front;
+                    front = front.next;
+                    killedNode.next = null;
+                    GYard(killedNode);
+                    print();
+                }else
+                {
+                    while(current != null)
+                    {
+                        if(current.name.equalsIgnoreCase(killed))
+                        {
+                            found = true;
+                            killedNode = current;
+                            pre.next = current.next;
+                            killedNode.next = null;
+                            GYard(killedNode);
+                            print();
+                            break;
+                        }
+                        pre = current;
+                        current = current.next;
+                    }
+                    if(found == false)
+                    {
+                        System.out.println("NOT in the LIST");
+                        System.exit(1);
+                    }
+                }
+            }
+            System.out.println("while3");
+        }
+        public void GYard(LinkedNode ln)
+        {
+            if(diedFront == null)
+            {
+                diedFront = ln;
+            }else
+            {
+                diedCurrent = diedFront;
+                while(diedCurrent.next != null)
+                {
+                    diedCurrent = diedCurrent.next;
+                    diedCurrent.next = ln;
+                }
+                System.out.println("while4");
+            }
+            printDied();
+        }
+        public void printDied()
+        {
+            current = front;
+            while(current != null)
+            {
+                System.out.println(" " + current.name);
+                current = current.next;
+            }
+            System.out.println("while5");
+        }
+
+        public void Winner()
+        {
+            System.out.println("the winner is : " + front.name);
+        }
+    }
+
+    public static class LinkedNode
+    {
+
+        String name;
+        LinkedNode next;
+
+        public LinkedNode(String value)
+        {
+            this.name = value;
+            this.next = null;
+        }
+
+        public LinkedNode(String value, LinkedNode next)
+        {
+            this.name = value;
+            this.next = next;
+        }
+    }
+
+}
