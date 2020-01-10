@@ -27,21 +27,21 @@ public class LinkedIntList
 
     public LinkedIntList()
     {
-        front = null;
+        front = null;//initialize by null
     }
 
     public void add(int value)
     {
         if (front == null)
         {
-            front = new ListNode(value);
+            front = new ListNode(value); // create a new node for the front
             return;
         } else
         {
             ListNode current = front;
             while (current.next != null)
             {
-                current = current.next;
+                current = current.next;//move the reference down one by one
             }
             current.next = new ListNode(value);
         }
